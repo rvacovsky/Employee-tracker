@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 
 const db = require('./db/connection');
+const connection = require('./db/index');
 require('console.table');
 
 
@@ -36,7 +37,7 @@ const mainNav = () => {
                 AddDept();
                 break;
             case "Add a Role":
-                AddRole();
+                addRole();
                 break;
             case "Add an Employee":
                 AddEmp();
@@ -112,6 +113,7 @@ AddDept = async () => {
     ]).then ((data) => {
     db.query(sql, data, (err, res) => {
         if (err) throw err;
+        console.log("Department Added!")
     });
         mainNav();
     });
@@ -120,39 +122,58 @@ AddDept = async () => {
 
 
 //Add Role
-AddRole = async () => {
-    const sql = `INSERT INTO role (title, department_id, salary) VALUES (?,?,?)`;
-    const params = [role.title, role.department.id, role.salary];
-    let departments = [];
-    await inquirer.prompt([
-        {
-            type: "input",
-            name: "role",
-            message: "Enter the new role"
-        },
-        {
-            type: "list",
-            name: "department",
-            message: "What department does this role fall under?",
-            choices: departments
-        },
-        {
-            type: "input",
-            name: "salary",
-            message: "What is the salary for this role?"
-        }
-    ]).then((params) => {
-        db.query(sql, params, (err, res) => {
-            if (err) throw err;
-        })
-        mainNav();
-    });
-    
+function addRole() {
+    connection.departmentSelect()
+        .then(([rows]) => {
+            let departments = rows;
+            const departmentChoices = departments.map(({ id, name }) => ({
+                name: name,
+                value: id
+            }));  
+
+            inquirer.prompt([
+                {
+                    type: "input",
+                    name: "role",
+                    message: "Enter the new role"
+                },
+                {
+                    type: "input",
+                    name: "salary",
+                    message: "What is the salary for this role?"
+                },
+                {
+                    type: "list",
+                    name: "department",
+                    message: "What department does this role fall under?",
+                    choices: departmentChoices
+                }        
+            ]).then(role => {
+                db.createRole(role)
+                    .then(() => console.log(`Added ${role.title} to the database!`))
+                    .then(() => mainNav())
+            })
+    })
 };
 
 // Add Employee. At the end it will loop back to main navigation
-const AddEmp = async () => {
-    const answers = await inquirer.prompt([
+function AddEmp () {
+    roleSelect()
+        .then(([rows]) => {
+            let roles = rows;
+            const roleChoices = roles.map(({ id, name }) => ({
+                name: name,
+                value: id
+            }));
+    managerSelect()
+    .then(([rows]) => {
+        let managers = rows;
+        const managerChoices = managers.map(({ id, name }) => ({
+            name: name,
+            value: id
+        }));
+    
+    inquirer.prompt([
         {
             type: "input",
             name: "firstname",
@@ -167,19 +188,21 @@ const AddEmp = async () => {
             type: "list",
             name: "role",
             message: "What is the employee's role at the organization?",
-            choices: []
+            choices: roleChoices
         },
         {
             type: "list",
             name: "manager",
             message: "Who is the employee's manager?",
-            choices: []
+            choices: managerChoices
         }
-    ]);
-    const data = [answers.firstname, answers.lastname, answers.role, answers.manager];
-    mainNav();
+    ]).then(employee => {
+        db.createEmployee(employee)
+            .then(() => console.log(`Added ${employee.name} to the database!`))
+            .then(() => mainNav())
+    })
     
-};
+})})};
 
 // Update an employee role
 UpdateRole = () => {
@@ -190,6 +213,30 @@ UpdateRole = () => {
         console.table(rows);
         mainNav();
     });
+}
+
+// Delete a role
+function removeRole() {
+    db.findRoles()
+        .then(([rows]) => {
+            let roles = rows;
+            const roleChoices = roles.map(({ id, title }) => ({
+                name: title,
+                value: id
+            })); 
+
+            inquirer.prompt([
+                {
+                    type: "list",
+                    name: "roleId",
+                    message: "Which role would you like to remove?",
+                    choices: roleChoices
+                }
+            ])
+                .then(res => db.removeRole(res.roleId))
+                .then(() => console.log("Removed role from the database!"))
+                .then(() => mainNav())
+        })
 }
 
 function quit() {
