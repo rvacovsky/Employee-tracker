@@ -17,7 +17,9 @@ When the user starts the application, they are presented with the following opti
 * Add an employee
 * Update an employee role
 
-When the user chooses to view all departments, they are presented with a formatted table showing department names and department ids. When the user chooses to view all roles, they are presented with the job title, role id, the department that role belongs to, and the salary for that role. When the user chooses to view all employees, they are presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to.
+When the user chooses to view all departments, they are presented with a formatted table showing department names and department IDs. When the user chooses to view all roles, they are presented with the job title, role ID, the department that role belongs to, and the salary for that role.
+
+When the user chooses to view all employees, they are presented with a formatted table showing employee data, including employee IDs, first names, last names, job titles, departments, salaries, and managers that the employees report to.
 
 When 'add a department' is chosen, the user is prompted to enter the name of the department and that department is added to the database. When the user chooses to add a role, they are prompted to enter the name, salary, and department for the role and that role is added to the database.
 
