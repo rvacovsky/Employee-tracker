@@ -33,16 +33,19 @@ const mainNav = () => {
                 viewEmps();
                 break;
             case "Add a Department":
-                AddDept();
+                addDept();
                 break;
             case "Add a Role":
                 addRole();
                 break;
             case "Add an Employee":
-                AddEmp();
+                addEmp();
                 break;
             case "Update an Employee Role":
-                UpdateRole();
+                updateRole();
+                break;
+            case "Remove a Role":
+                removeRole();
                 break;
                 default:
                     quit();
@@ -78,7 +81,7 @@ viewEmps = () => {
 }
 
 // Add Department
-function AddDept() {
+function addDept() {
     db.deptAdd()
     inquirer.prompt([
         {
@@ -132,7 +135,7 @@ function addRole() {
 
 
 // Add Employee. At the end it will loop back to main navigation
-function AddEmp () {
+function addEmp () {
     db.roleSelect()
         .then(([rows]) => {
             let roles = rows;
@@ -180,7 +183,7 @@ function AddEmp () {
 })})};
 
 // Update an employee role
-UpdateRole = () => {
+updateRole = () => {
     db.roleUpdate(sql, (err, rows) => {
         if (err) throw err;
         console.table(rows);
@@ -189,7 +192,7 @@ UpdateRole = () => {
 }
 
 // Delete a role
-function removeRole() {
+function removeRole () {
     db.findRoles()
         .then(([rows]) => {
             let roles = rows;
@@ -212,16 +215,6 @@ function removeRole() {
         })
 }
 
-function departmentSelect() {
-    db.deptSelect()
-    .then(([rows]) => {
-        let departments = rows;
-        const departmentChoices = departments.map(({ id, name }) => ({
-            name: name,
-            value: id
-        }));  
-    });
-}
   
 quit = () => {
     console.log("Goodbye!");
