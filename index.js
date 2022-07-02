@@ -18,6 +18,7 @@ const mainNav = () => {
                     "Add a Role",
                     "Add an Employee",
                     "Update an Employee Role",
+                    "Remove a Role",
                     "Quit"]
         },
     ])
@@ -99,19 +100,19 @@ function addDept() {
 };
 
 //Add Role
-function addRole() {
-    db.deptSelect()
+async function addRole() {
+    await db.deptSelect()
     .then(([rows]) => {
         let department = rows;
         const departmentChoices = department.map(({ id, name }) => ({
             name: name,
             value: id
         }));  
-   
+    
     inquirer.prompt([
         {
             type: "input",
-            name: "role",
+            name: "title",
             message: "Enter the new role"
         },
         {
@@ -125,8 +126,8 @@ function addRole() {
             message: "What department does this role fall under?",
             choices: departmentChoices
         }        
-    ]).then(roles => {
-        db.createRole(roles)
+    ]).then(role => {
+        db.createRole(role)
             .then(() => console.log(`Added ${roles.title} to the database!`))
             .then(() => mainNav())
     })
@@ -135,8 +136,8 @@ function addRole() {
 
 
 // Add Employee. At the end it will loop back to main navigation
-function addEmp () {
-    db.roleSelect()
+async function addEmp () {
+    await db.roleSelect()
         .then(([rows]) => {
             let roles = rows;
             const roleChoices = roles.map(({ id, name }) => ({
@@ -164,7 +165,7 @@ function addEmp () {
         },
         {
             type: "list",
-            name: "role",
+            name: "roles",
             message: "What is the employee's role at the organization?",
             choices: roleChoices
         },
@@ -184,32 +185,31 @@ function addEmp () {
 
 // Update an employee role
 updateRole = () => {
-    db.roleUpdate(sql, (err, rows) => {
-        if (err) throw err;
-        console.table(rows);
-        mainNav();
-    });
+    db.roleUpdate ().then(([rows]) => {
+        let role = rows;
+        console.table(role)
+    })
+      .then(() => mainNav()) 
 }
 
 // Delete a role
-function removeRole () {
-    db.findRoles()
+async function removeRole () {
+     await db.findRoles()
         .then(([rows]) => {
             let roles = rows;
-            const roleChoices = roles.map(({ id, title }) => ({
-                name: title,
+            const roleChoices = roles.map(({ id, name }) => ({
+                name: name,
                 value: id
-            })); 
-
+            }));
             inquirer.prompt([
                 {
                     type: "list",
-                    name: "roleId",
+                    name: "rolesId",
                     message: "Which role would you like to remove?",
                     choices: roleChoices
                 }
             ])
-                .then(res => db.removeRole(res.roleId))
+                .then(res => db.removeRole(res.rolesId))
                 .then(() => console.log("Removed role from the database!"))
                 .then(() => mainNav())
         })

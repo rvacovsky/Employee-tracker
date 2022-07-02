@@ -22,7 +22,7 @@ class database{
         return this.db.promise().query('INSERT INTO roles SET ?', roles) ;
     }
     roleUpdate = () => {
-        return this.db.promise().query('SELECT * FROM employees');
+        return this.db.promise().query('SELECT * FROM employee');
     }
     findRoles = () => {
         return this.db.promise().query('SELECT roles.id AS ID, roles.title AS Role, department.name AS Department, roles.salary AS Salary FROM roles LEFT JOIN department ON roles.department_id = department.id');
