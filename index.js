@@ -55,29 +55,29 @@ const mainNav = () => {
 
 // Shows all Departments
 viewDepts = () => {
-    db.deptView( (err, rows) => {
-        if (err) throw err;
-        console.table(rows);
-        mainNav();
-    });
+    db.deptView ().then(([rows]) => {
+        let department = rows;
+        console.table(department)
+    })
+      .then(() => mainNav())
 }
 
 // Shows all Roles
 viewRoles = () => {
-    db.roleView(sql, (err, rows) => {
-        if (err) throw err;
-        console.table(rows);
-        mainNav();
-    });
+    db.roleView ().then(([rows]) => {
+        let role = rows;
+        console.table(role)
+    })
+      .then(() => mainNav())
 }
 
 // Shows all Employees
 viewEmps = () => {
-    db.empView(sql, (err, rows) => {
-        if (err) throw err;
-        console.table(rows);
-        mainNav();
-    });
+    db.empView ().then(([rows]) => {
+        let employee = rows;
+        console.table(employee)
+    })
+      .then(() => mainNav()) 
 }
 
 // Add Department
@@ -90,7 +90,7 @@ function addDept() {
             message: "Enter the new department"
         }
     ]).then ((data) => {
-    db.query(sql, data, (err, res) => {
+    db.query(data, (err, res) => {
         if (err) throw err;
         console.log("Department Added!")
     });
@@ -125,9 +125,9 @@ function addRole() {
             message: "What department does this role fall under?",
             choices: departmentChoices
         }        
-    ]).then(role => {
-        db.createRole(role)
-            .then(() => console.log(`Added ${role.title} to the database!`))
+    ]).then(roles => {
+        db.createRole(roles)
+            .then(() => console.log(`Added ${roles.title} to the database!`))
             .then(() => mainNav())
     })
 });
