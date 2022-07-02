@@ -1,6 +1,6 @@
-# Employee Tracker
+# Office Tracker 👨‍💼
 
-Employee Tracker is a CLI (command-line interface) that uses SQL to create and maintain a database for employees, their roles, and the departments in which they work. 
+Office Tracker is a CLI (command-line interface) that uses SQL to create and maintain a database for employees, their roles, and the departments in which they work. 
 
 ## User Story
 
@@ -16,6 +16,7 @@ When the user starts the application, they are presented with the following opti
 * Add a role
 * Add an employee
 * Update an employee role
+* Remove a role
 
 When the user chooses to view all departments, they are presented with a formatted table showing department names and department IDs. When the user chooses to view all roles, they are presented with the job title, role ID, the department that role belongs to, and the salary for that role.
 
@@ -30,3 +31,7 @@ When the user adds an employee, they are prompted to enter the employee’s firs
 * [MySQL](https://www.mysql.com/)
 * [MySQL2](https://www.npmjs.com/package/mysql2)
 * [Inquirer](https://www.npmjs.com/package/inquirer)
+
+## Link to Demo Video
+
+https://drive.google.com/file/d/1izSq5vpDmCopx9sAFGM3vu0pZdO9ub1a/view
